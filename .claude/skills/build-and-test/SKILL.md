@@ -55,10 +55,12 @@ enable_testing()
 include(FetchContent)
 FetchContent_Declare(
     googletest
-    URL https://github.com/google/googletest/archive/refs/tags/v1.14.0.zip
+    URL https://codeload.github.com/google/googletest/zip/refs/tags/v1.14.0
+    DOWNLOAD_EXTRACT_TIMESTAMP TRUE
 )
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 set(INSTALL_GTEST OFF CACHE BOOL "" FORCE)
+set(BUILD_GMOCK OFF CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 
 add_executable(hello_tests tests/test_hello.cpp)
@@ -187,3 +189,5 @@ exit /b 1
 | `LNK2038: mismatch detected for 'RuntimeLibrary'` (MSVC) | не задано `gtest_force_shared_crt` | додати `set(gtest_force_shared_crt ON ...)` |
 | `ci.bat` нестабільно виконує `goto :fail` | файл збережено з LF | конвертувати у CRLF, покластися на `.gitattributes` |
 | `cmake: command not found` | CMake не встановлено / не в PATH | зупинитись і повідомити, чого бракує |
+| конфігурація «зависає» на `FetchContent` | `github.com/.../archive/...` недоступний у мережі, редірект на `codeload` не відбувається | у шаблоні використовувати пряме посилання `https://codeload.github.com/google/googletest/zip/refs/tags/<tag>` |
+| `CMake Warning (dev) ... CMP0135` | не задано `DOWNLOAD_EXTRACT_TIMESTAMP` | додати `DOWNLOAD_EXTRACT_TIMESTAMP TRUE` у `FetchContent_Declare` |

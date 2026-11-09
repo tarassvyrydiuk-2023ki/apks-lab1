@@ -132,8 +132,9 @@ def check_build() -> None:
     if extra:
         env["PATH"] = extra + os.pathsep + env["PATH"]
     check(g, "cmake available", shutil.which("cmake", path=env["PATH"]) is not None, "cmake not found in PATH")
-    script = ["cmd", "/c", "ci.bat"] if IS_WIN else ["bash", "./ci.sh"]
-    if not (ROOT / script[-1]).is_file():
+    # Explicit relative path: cmd may not search the current directory (NoDefaultCurrentDirectoryInExePath).
+    script = ["cmd", "/c", ".\\ci.bat"] if IS_WIN else ["bash", "./ci.sh"]
+    if not (ROOT / script[-1].lstrip(".\\/")).is_file():
         check(g, "ci script exists", False, f"{script[-1]} missing")
         return
     r = run(script, env=env)
