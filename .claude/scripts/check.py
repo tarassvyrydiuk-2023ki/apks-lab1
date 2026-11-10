@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """Deterministic checker behind the /check command (lab 1, variant 1: C++/CMake/GoogleTest).
 
-Groups: agent, structure, build, workflow, git.
+Groups: agent, structure, build, workflow, git (full run).
+Step-only group: scaffold (files of /git-init + /create-project, used by /create-project).
 Usage: python .claude/scripts/check.py [--only GROUP] [--no-build]
 Prints "[FAIL] <group>: <check>" lines and a final "RESULT: PASS|FAIL".
 It never modifies tracked files (the build step only recreates the ignored build/ dir).
@@ -19,6 +20,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 IS_WIN = os.name == "nt"
 GROUPS = ["agent", "structure", "build", "workflow", "git"]
+# Groups that run only with --only (per-step checks, not part of the full /check run).
+STEP_GROUPS = ["scaffold"]
 
 total = 0
 failed = 0
@@ -79,6 +82,24 @@ def check_agent() -> None:
     check(g, "init calls commands in the right order", all(o >= 0 for o in order) and order == sorted(order))
     check(g, "init stops on first error (INIT FAILED)", "INIT FAILED at step" in init)
     check(g, "init has step 4a (docs before /check)", "Крок 4a" in init)
+
+
+# --------------------------------------------------------------------------- scaffold (step 2)
+def check_scaffold() -> None:
+    """Only the files produced by /git-init and /create-project (skill project-scaffold)."""
+    g = "scaffold"
+    required = ["src/main.cpp", "src/hello.cpp", "include/hello/hello.hpp", ".gitignore", ".gitattributes"]
+    missing = [f for f in required if not (ROOT / f).is_file()]
+    check(g, "scaffold files exist", not missing, f"missing {missing}")
+    check(g, "main.cpp has main()", "int main" in read("src/main.cpp"))
+    check(g, "hello.cpp returns 'Hello, World!'", "Hello, World!" in read("src/hello.cpp"))
+    check(g, "hello.hpp declares greeting() and add()",
+          "greeting()" in read("include/hello/hello.hpp") and "add(" in read("include/hello/hello.hpp"))
+    gi = [l.strip() for l in read(".gitignore").splitlines() if l.strip() and not l.startswith("#")]
+    check(g, ".gitignore has build/ without duplicates", "build/" in gi and len(gi) == len(set(gi)))
+    check(g, ".gitattributes has eol rules", "*.sh text eol=lf" in read(".gitattributes")
+          and "*.bat text eol=crlf" in read(".gitattributes"))
+    check(g, "README has 'Запуск проєкту' section", "## Запуск проєкту" in read("README.md"))
 
 
 # --------------------------------------------------------------------------- structure
@@ -196,13 +217,19 @@ def check_git() -> None:
 
 
 def main() -> int:
+    # Output contains Cyrillic; on Windows a redirected stdout defaults to cp1252 and crashes.
+    for stream in (sys.stdout, sys.stderr):
+        if hasattr(stream, "reconfigure"):
+            stream.reconfigure(encoding="utf-8", errors="replace")
     ap = argparse.ArgumentParser()
-    ap.add_argument("--only", choices=GROUPS)
+    ap.add_argument("--only", choices=GROUPS + STEP_GROUPS)
     ap.add_argument("--no-build", action="store_true")
     args = ap.parse_args()
-    funcs = {"agent": check_agent, "structure": check_structure, "build": check_build,
-             "workflow": check_workflow, "git": check_git}
-    for grp in GROUPS:
+    funcs = {"agent": check_agent, "scaffold": check_scaffold, "structure": check_structure,
+             "build": check_build, "workflow": check_workflow, "git": check_git}
+    for grp in GROUPS + STEP_GROUPS:
+        if grp in STEP_GROUPS and args.only != grp:
+            continue
         if args.only and grp != args.only:
             continue
         if grp == "build" and args.no_build and not args.only:

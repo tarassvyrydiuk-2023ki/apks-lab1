@@ -23,8 +23,9 @@ description: Створити початковий C++ Hello World проєкт 
 
 ## Перевірка
 
-Окремої збірки ще немає, тому перевірка структурна: `python .claude/scripts/check.py --only structure`.
-Повна перевірка запуску виконується після `/create-build`.
+Окремої збірки ще немає, тому перевіряються лише файли цього кроку: `python .claude/scripts/check.py --only scaffold` → `RESULT: PASS`.
+Не використовуй тут `--only structure`: ця група перевіряє весь проєкт (`CMakeLists.txt`, `ci.*`, `ci.yml`, `docs/*`) і на кроці 2 закономірно дає `FAIL`.
+Повна перевірка виконується в `/check` (крок 5).
 
 ## Повідомлення про помилку
 

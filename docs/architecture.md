@@ -14,16 +14,16 @@
 | Повторний запуск ламає файли | кожна команда ідемпотентна: CREATE / SKIP / diff + запит, без перезапису |
 | Небезпечні дії AI | заборони в manifest: видалення, force-push, push без запиту, секрети, `\|\| true` |
 
-## Відповідність структурі з методички (Copilot → Claude Code)
+## Структура агента в Claude Code
 
-| Методичка (Copilot) | Реалізація (Claude Code) |
-|---|---|
-| `.github/agents/build-engineer.agent.md` | `.claude/agents/build-engineer.md` (subagent) + `CLAUDE.md` |
-| `.github/skills/*/SKILL.md` | `.claude/skills/{project-scaffold,build-and-test,github-actions}/SKILL.md` |
-| `.github/prompts/*.prompt.md` | `.claude/commands/*.md` (slash-команди) |
-| `init.prompt.md`, `check.prompt.md` | `.claude/commands/init.md`, `check.md` + `.claude/scripts/check.py` |
-| `.github/workflows/ci.yml` | `.github/workflows/ci.yml` (без змін) |
-| `CMakeLists.txt` | `CMakeLists.txt` + `ci.sh` / `ci.bat` (варіант 1) |
+| Компонент | Файл | Призначення |
+|---|---|---|
+| Manifest агента | `.claude/agents/build-engineer.md` (subagent) + `CLAUDE.md` | роль, область відповідальності, правила, заборони, критерії успіху |
+| Skills | `.claude/skills/{project-scaffold,build-and-test,github-actions}/SKILL.md` | шаблони файлів, порядок дій, перевірки, типові помилки |
+| Commands | `.claude/commands/*.md` (slash-команди) | `/git-init`, `/create-project`, `/create-build`, `/create-actions`, `/check` |
+| Оркестратор і перевірка | `.claude/commands/init.md`, `check.md` + `.claude/scripts/check.py` | послідовний запуск кроків і детермінована перевірка `RESULT: PASS / FAIL` |
+| CI | `.github/workflows/ci.yml` | матриця Windows / Linux / macOS, лише виклик `ci.sh` / `ci.bat` |
+| Складання | `CMakeLists.txt` + `ci.sh` / `ci.bat` | CMake + GoogleTest / CTest (варіант 1) |
 
 ## Skills
 

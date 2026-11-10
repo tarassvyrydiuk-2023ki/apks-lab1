@@ -12,7 +12,7 @@ description: Лише перевірити агента, структуру, с�
 
 ## Дії
 
-1. Виконай `python .claude/scripts/check.py` (опції: `--only agent|structure|build|workflow|git`, `--no-build`).
+1. Виконай `python .claude/scripts/check.py` (опції: `--only agent|structure|build|workflow|git|scaffold`, `--no-build`). Група `scaffold` — лише для перевірки кроку `/create-project`, у повний запуск не входить. Скрипт сам перемикає вивід на UTF-8, тому додаткові змінні середовища (`PYTHONIOENCODING`) не потрібні.
 2. Скрипт перевіряє 5 груп:
    - **agent** — manifest, 3 skills, 6 commands, порядок викликів у `init.md`, розділи у skills;
    - **structure** — файли проєкту, `docs/usage.md`, `docs/architecture.md`, `docs/ai-log.md`, `BasicAddition` у тестах;

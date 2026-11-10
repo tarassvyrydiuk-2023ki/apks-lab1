@@ -85,7 +85,8 @@ int main() {
 - `src/main.cpp`, `src/hello.cpp`, `include/hello/hello.hpp` існують;
 - у `src/main.cpp` є `int main`; у `hello.cpp` — `Hello, World!`;
 - у `.gitignore` є `build/` і немає повторів;
-- у `.gitattributes` є правила для `*.sh` і `*.bat`.
+- у `.gitattributes` є правила для `*.sh` і `*.bat`;
+- автоматично: `python .claude/scripts/check.py --only scaffold` → `RESULT: PASS`.
 
 ## Приклад
 
@@ -99,3 +100,4 @@ int main() {
 | `.gitignore` містить `build/` двічі | команду запустили повторно без перевірки | перед додаванням перевіряти наявність рядка |
 | `src/main.cpp` вже існує з іншим вмістом | користувач змінив файл | не перезаписувати, показати diff, запитати |
 | `include/hello/hello.hpp` не знайдено при збірці | помилка в `target_include_directories` | виправити skill `build-and-test`, а не копіювати файл вручну |
+| `check.py --only structure` після кроку 2 → `FAIL` (бракує `CMakeLists.txt`, `ci.*`, `docs/*`) | група `structure` перевіряє весь проєкт, а не лише цей крок | для кроку 2 використовувати `check.py --only scaffold` |
