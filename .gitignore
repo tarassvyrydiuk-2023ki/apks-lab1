@@ -1,0 +1,11 @@
+# Build output and CMake generated files
+build/
+out/
+_deps/
+CMakeFiles/
+CMakeCache.txt
+Testing/
+
+# IDE
+.vs/
+.idea/
