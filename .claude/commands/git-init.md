@@ -16,7 +16,7 @@ description: Перевірити Git-репозиторій, створити/�
 
 1. Виведи `git branch --show-current`, `git remote -v`.
 2. Створи або доповни `.gitignore` рядками зі skill (`build/`, `out/`, `_deps/`, `CMakeFiles/`, `CMakeCache.txt`, `Testing/`, `.vs/`, `.idea/`). Додавай лише ті рядки, яких ще немає.
-3. Створи `.gitattributes` (`*.sh text eol=lf`, `*.bat text eol=crlf`), якщо його немає.
+3. Створи `.gitattributes` (`*.sh text eol=lf`, `*.bat text eol=crlf`, `.claude/** linguist-vendored`), якщо його немає; якщо є — додай лише відсутні рядки.
 4. Виведи `git status --short`.
 
 ## Очікувані файли

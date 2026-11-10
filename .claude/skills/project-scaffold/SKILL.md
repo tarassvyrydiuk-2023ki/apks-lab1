@@ -25,7 +25,7 @@ description: Create the minimal C++ Hello World project layout (src/, include/, 
 | `src/hello.cpp` | реалізація бібліотеки `hello_core` |
 | `src/main.cpp` | `int main()` → друкує `Hello, World!` |
 | `.gitignore` | `build/`, `out/`, `_deps/`, `CMakeFiles/`, `CMakeCache.txt`, `Testing/`, `.vs/`, `.idea/` |
-| `.gitattributes` | `*.sh text eol=lf`, `*.bat text eol=crlf` |
+| `.gitattributes` | `*.sh text eol=lf`, `*.bat text eol=crlf`, `.claude/** linguist-vendored` (скрипти агента не враховуються в статистиці мов GitHub) |
 | `README.md` (розділ «Запуск проєкту») | ПІБ, група, варіант, опис, спосіб запуску агента |
 
 ### Шаблон `include/hello/hello.hpp`
@@ -85,7 +85,7 @@ int main() {
 - `src/main.cpp`, `src/hello.cpp`, `include/hello/hello.hpp` існують;
 - у `src/main.cpp` є `int main`; у `hello.cpp` — `Hello, World!`;
 - у `.gitignore` є `build/` і немає повторів;
-- у `.gitattributes` є правила для `*.sh` і `*.bat`;
+- у `.gitattributes` є правила для `*.sh`, `*.bat` і `.claude/** linguist-vendored`;
 - автоматично: `python .claude/scripts/check.py --only scaffold` → `RESULT: PASS`.
 
 ## Приклад
